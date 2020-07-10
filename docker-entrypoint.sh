@@ -1,6 +1,6 @@
 #!/bin/bash
 
-/usr/bin/mongod --bind_ip_all --port ${PORT} --replSet ${RS}
+/usr/bin/mongod --bind_ip_all --port ${PORT} --replSet ${RS} &
 
 echo "Waiting for startup.."
 until mongo --host 127.0.0.1:${PORT} --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' &>/dev/null; do
@@ -18,8 +18,7 @@ until mongo --host 127.0.0.1:${PORT} --eval 'quit(db.runCommand({ ping: 1 }).ok 
         "members": [
             {
                 "_id": 0,
-                "host": "127.0.0.1:${PORT}",
-                "priority": 2
+                "host": "${REPL1}:${PORT}",
             }
         ]
     };
@@ -29,4 +28,4 @@ EOF
 
 echo "ReplicaSet configured, tailing log"
 
-tail -f /var/log/mongodb/mongod.log
+tail -f /dev/null
